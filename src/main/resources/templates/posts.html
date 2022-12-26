@@ -11,16 +11,18 @@
     <thead>
     <tr>
         <th scope="col">Title</th>
-        <th scope="col">Title</th>
         <th scope="col">Excerpt</th>
         <th scope="col">Author</th>
         <th scope="col">Post</th>
-        <th scope="col">Created At</th>
+        <th scope="col">
+            <a th:href="@{'/page/' + ${currentPage} + '?sortField=createdAt&sortDirection='+ ${reverseSortDirection}} ">
+                Created At
+            </a>
+        </th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="post,status: ${posts}" >
-        <td th:text="${post.id}"></td>
         <td th:text="${post.title}"></td>
         <td th:text="${post.excerpt}"></td>
         <td th:text="${post.author}"></td>
@@ -93,21 +95,22 @@
     search
 
 </button>&ndash;&gt;-->
-<form class="example" action="/post/sort">
-    <input type="text" placeholder="Sort by.." name="search" >
-    <button type="submit">search</button>
-</form>
+<!--not using this search-->
+<!--<form class="example" action="/post/sort">-->
+<!--    <input type="text" placeholder="Sort by.." name="search" >-->
+<!--    <button type="submit">search</button>-->
+<!--</form>-->
 <hr>
 <!--PAGINATION-->
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    </ul>
-</nav>
+<!--<nav aria-label="Page navigation example">-->
+<!--    <ul class="pagination">-->
+<!--        <li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
+<!--        <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--        <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--        <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--        <li class="page-item"><a class="page-link" href="#">Next</a></li>-->
+<!--    </ul>-->
+<!--</nav>-->
 <!--Pagination-->
 <div th:if="${totalPages>1}">
     <div class="row" col-sm-10>
@@ -116,18 +119,18 @@
         </div>
         <div class="col-sm-2">
             <span th:each="i:${#numbers.sequence(1,totalPages)}">
-                <a th:if="${currentPage!=i}" th:href="@{'/page/' + ${i}}">[[${i}]]</a>
+                <a th:if="${currentPage!=i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">[[${i}]]</a>
                 <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;&nbsp;
             </span>
         </div>
 <!--   next -->
         <div class="col-sm-1">
-            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}}">Next</a>
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">Next</a>
             <span th:unless="${currentPage < totalPages}">Next</span>
         </div>
 <!--        last-->
         <div class="col-sm-1">
-            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}}">Last</a>
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">Last</a>
             <span th:unless="${currentPage < totalPages}">Last</span>
         </div>
 

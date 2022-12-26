@@ -19,7 +19,7 @@ public interface PostService {
      List<Post>findAll(String field);
      //pageable = currentPage+recordPerPage
      Page<Post>findAll(Pageable pageable);
-     Page<Post> findPaginated(int pageNo, int  pageSize);
+     Page<Post> findPaginated(int pageNo, int  pageSize,String sortField,String sortDirection);
 
 
 

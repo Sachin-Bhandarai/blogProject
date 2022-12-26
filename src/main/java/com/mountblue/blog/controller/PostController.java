@@ -35,7 +35,7 @@ public class PostController {
 //        model.addAttribute("posts", postService.getAllPosts());
 // new
 
-        return post(1,model);
+        return post(1,"createdAt","asc",model);
     }
 
     @CrossOrigin
@@ -122,15 +122,27 @@ public class PostController {
     }
     @CrossOrigin
     @GetMapping("/page/{pageNo}")
-    public String post(@PathVariable(value = "pageNo") Integer pageNo,Model model){
+    public String post(@PathVariable(value = "pageNo") Integer pageNo,
+                       @RequestParam("sortField") String sortField,
+                       @RequestParam("sortDirection") String sortDirection,
+                       Model model){
         System.out.println("page no ="+pageNo);
         int pageSize=5;
-        Page<Post> pageOfPosts = postServiceImpl.findPaginated(pageNo,pageSize);
+        Page<Post> pageOfPosts = postServiceImpl.findPaginated(pageNo,pageSize,sortField,sortDirection);
         List<Post> posts=pageOfPosts.getContent();
         model.addAttribute("currentPage",pageNo);
         model.addAttribute("totalPages",pageOfPosts.getTotalPages());
         model.addAttribute("totalItems",pageOfPosts.getTotalElements());
+
+
+        model.addAttribute("sortField",sortField);
+        model.addAttribute("sortDirection",sortDirection);
+
+        model.addAttribute("reverseSortDirection",sortDirection.equals("asc") ? "desc" : "asc");
+
         model.addAttribute("posts",posts);
+
+
         return "posts";
     }
 

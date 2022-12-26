@@ -36,6 +36,13 @@ public class Post {
     private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment>comments;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "Post_Tag",
+            joinColumns = { @JoinColumn(name = "post_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+    )
+    private List<Tag> tags;
 
 
 

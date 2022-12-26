@@ -4,6 +4,9 @@ import com.mountblue.blog.entity.Comment;
 import com.mountblue.blog.entity.Post;
 import com.mountblue.blog.repository.PostRepository;
 import com.mountblue.blog.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +95,18 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> findAll(String field) {
         return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    @Override
+    public Page<Post> findAll(Pageable pageable) {
+
+        return null;
+    }
+
+    @Override
+    public Page<Post> findPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
+        return this.postRepository.findAll(pageable);
     }
 
 

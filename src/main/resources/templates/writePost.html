@@ -9,37 +9,33 @@
 <!--
 <form action="#" th:action="@{/register}" method="post" th:object="${user}">
 -->
-<form th:action="@{/post}"  method="post">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
+<form th:action="@{/post}" th:object="${post}" method="post">
+
+<!--<form th:action="@{/post}"  method="post">-->
+
   <div class="form-group">
     <label for="exampleInputPassword1">Title</label>
-    <input type="text" class="form-control" id="exampleInputPassword1" name="title">
+    <input th:field="*{title}" type="text" class="form-control" id="exampleInputPassword1" name="title">
   </div>
 
   <div class="form-group">
     <label for="exampleInputPassword1">Excerpt</label>
-    <input type="text" class="form-control" name="excerpt">
+    <input th:field="*{excerpt}" type="text" class="form-control" name="excerpt">
   </div>
 
   <div class="form-group">
     <label for="exampleInputPassword1">Author</label>
-    <input type="text" class="form-control" name="author">
+    <input th:field="*{author}"  type="text" class="form-control" name="author">
   </div>
   <div class="form-group">
     <label for="exampleInputPassword1">Content</label>
-    <input type="text" class="form-control" name="content" >
+    <input  th:field="*{content}" type="text" class="form-control" name="content" >
   </div>
 
   <div class="form-group">
-    <label for="exampleInputPassword1">Tags</label>
-    <input type="text" class="form-control" name="tag" >
+    <label for="exampleInputPassword1" >Tags</label>
+    <input type="text" class="form-control" name="postTags" >
   </div>
-
-
 
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>story</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+<body>
+
+<div class="card" style="width: 18rem;">
+
+    <div class="card-body">
+        <h5 class="card-title" th:text="${post.title}">Card title</h5>
+        <p class="card-text" th:text="${post.content}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><p th:text="${post.author}"></p></li>
+        <li class="list-group-item"><p th:text="${post.createdAt}"></p></li>
+        <li class="list-group-item"></li>
+    </ul>
+    <div class="card-body">
+<!--        <a href="/updatePostPage" class="card-link">Update</a>-->
+        <a th:href="@{/updatePostPage/post/{postId}(postId=${post.id})}"> Update </a>
+    </div>
+</div>
+
+<!--Comment Section-->
+<form action="/saveComment" >
+    Name - <input type="text" name="name"/><br>
+    Email - <input type="email" name="email"><br>
+    Comment - <input type="text" name="comment"/><br>
+    <button name="id" th:value="*{post.id}">comment</button>
+</form>
+<!--showing comment-->
+<tr th:each="comment: ${comments}">
+    <td th:text="${comment.name}" />
+    <td th:text="${comment.email}" />
+    <td th:text="${comment.comment}" />
+    <td> <a th:href="@{/post/{postId}/comment/{commentId}(postId = ${post.id},commentId=${comment.id})}"> Delete </a> </td>
+    <td> <a th:href="@{/showCommentUpdate/{id}/post/{postId}(id=${comment.id},postId=${post.id})}"> Update </a> </td>
+
+
+    <br> <br>
+</tr>
+<!--Delete post Button-->
+<form method="POST" th:action="@{/post/{id}(id=${post.id})}">
+    <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
+
+</form>
+
+
+
+</body>
+</html>

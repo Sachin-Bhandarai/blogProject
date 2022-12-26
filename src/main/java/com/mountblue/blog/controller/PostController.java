@@ -1,0 +1,116 @@
+package com.mountblue.blog.controller;
+
+import com.mountblue.blog.entity.Comment;
+import com.mountblue.blog.entity.Post;
+import com.mountblue.blog.impl.PostServiceImpl;
+import com.mountblue.blog.repository.PostRepository;
+import com.mountblue.blog.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class PostController {
+    private final PostRepository postRepository;
+    @Autowired
+    PostServiceImpl postServiceImpl;
+    @Autowired
+    private PostService postService;
+
+    public PostController(PostService postService,
+                          PostRepository postRepository) {
+        super();
+        this.postService = postService;
+        this.postRepository = postRepository;
+    }
+
+    @CrossOrigin
+    @GetMapping("/post")
+    public String getAllPosts(Model model) {
+        model.addAttribute("posts", postService.getAllPosts());
+//        model.addAttribute("posts",postServiceImpl.findAll("id"));
+        return "posts";
+    }
+
+    @CrossOrigin
+    @GetMapping("/post/new")
+    public String createPost() {
+        return "writePost";
+    }
+
+    @CrossOrigin
+    @PostMapping("/post")
+    public String savePost(Post post) {
+        postServiceImpl.save(post);
+        return "redirect:/post";
+    }
+
+    @CrossOrigin
+    @GetMapping("/post/{id}")
+    public String getPostById(@PathVariable("id") Long id, Model model) {
+        Post post = postServiceImpl.getPostById(id);
+        model.addAttribute("post", post);
+        model.addAttribute("comments", post.getComments());
+        return "viewStory";
+    }
+
+    @CrossOrigin
+    @GetMapping("/saveComment")
+    public String saveComment(@RequestParam(name = "name") String name,
+                              @RequestParam(name = "email") String email,
+                              @RequestParam(name = "comment") String commentData,
+                              @RequestParam(name = "id") Long postId) {
+        postServiceImpl.addCommentByPostId(postId, name, email, commentData);
+        System.out.println(postId);
+        return "redirect:/post/" + postId;
+    }
+
+    @CrossOrigin
+    @GetMapping("/post/{postId}/comment/{commentId}")
+    public String deleteComment(@PathVariable("postId") Long postId,@PathVariable("commentId") Long commentId) {
+        postServiceImpl.deleteCommentByCommentId(postId,commentId);
+        return "redirect:/post/" + postId;
+    }
+
+    // comment redirct to upate page
+    @CrossOrigin
+    @GetMapping("/showCommentUpdate/{id}/post/{postId}")
+    public String showUpdateComment(@PathVariable("postId") Long postId,@PathVariable("id") Long commentId,Model model) {
+        System.out.println("commentId="+commentId+ " postId="+postId);
+        model.addAttribute("comment",postServiceImpl.getCommentByPostId(postId,commentId));
+        model.addAttribute("postId",postId);
+        return "updateComment";
+    }
+    @CrossOrigin
+    @PostMapping("/updateComment")
+    public String saveUpdatedComment(@RequestParam("postId") Long postId, @RequestParam("commentId") Long commentId,@ModelAttribute("comment") Comment comment){
+        postServiceImpl.updateCommentByCommentId(postId,commentId,comment.getComment());
+        return "redirect:/post/" + postId;
+    }
+    @CrossOrigin
+
+    @PostMapping("/post/{id}")
+    public String deletePost(@PathVariable("id") Long postId){
+        postServiceImpl.deletePostById(postId);
+        return "redirect:/post";
+    }
+    @CrossOrigin
+    @PostMapping("/post/update")
+    public String updatePost(@RequestParam("postId") Long postId,@ModelAttribute("post") Post post){
+        postServiceImpl.updatePost(postId,post.getContent());
+        return "redirect:/post/" + postId;
+    }
+
+    //redirect to post update page
+    @CrossOrigin
+    @GetMapping("/updatePostPage/post/{postId}")
+    public String updatePostPage(@PathVariable("postId") Long postId,Model model){
+        System.out.println("************redricting method********");
+        model.addAttribute("post",postServiceImpl.getPostById(postId));
+        return "updatePostPage";
+    }
+
+
+
+}

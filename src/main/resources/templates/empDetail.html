@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1> Emp Details</h1>
+  Name - <span th:text="${savedEmp.name}"></span>
+  Salary - <span th:text="${savedEmp.salary}"></span>
+  Mobile - <span th:text="${savedEmp.mob}"></span>
+  <a th:href="@{registration}">Go to Registration</a>
+<a th:href="@{registration}">Go to HOMe</a>
+
+
+</body>
+</html>

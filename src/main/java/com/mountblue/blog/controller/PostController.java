@@ -49,8 +49,8 @@ public class PostController {
     @CrossOrigin
     @PostMapping("/post")
     public String savePost(@ModelAttribute("post") Post post,@RequestParam("postTags") String tags) {
-        System.out.println("*****************8***88********");
-        System.out.println("post tags are "+post.getTags());
+        System.out.println("**************in controller********");
+
         System.out.println("post tags are "+tags);
         postServiceImpl.savePost(post,tags);
         return "redirect:/post";

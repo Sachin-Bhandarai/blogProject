@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 public class Tag {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     @CreationTimestamp
@@ -19,12 +20,7 @@ public class Tag {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    @ManyToMany
-    @JoinTable(
-            name = "Post_Tag",
-            joinColumns = { @JoinColumn(name = "tag_id") },
-            inverseJoinColumns = { @JoinColumn(name = "post_id") }
-    )
+    @ManyToMany(mappedBy = "tags",cascade = CascadeType.ALL)
     private List<Post> posts;
 
 //    public void addPost(Post post) {
@@ -72,5 +68,16 @@ public class Tag {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", posts=" + posts +
+                '}';
     }
 }

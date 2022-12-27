@@ -41,10 +41,24 @@ public class PostServiceImpl implements PostService {
         String[] tagArray = postTags.split(",");
         List<Tag> tags = new ArrayList<>();
         for (String tag : tagArray) {
+            System.out.println("*********in savePost()********");
+            System.out.println("tags are ="+tag);
             Tag tagObject = new Tag();
             tagObject.setName(tag);
             tags.add(tagObject);
         }
+//        post.setTags(tags);
+        System.out.println("tags are ="+tags.toString());
+        System.out.println("post is "+post.toString());
+        System.out.println("to be saved is"+post);
+        Post newPost= new Post(post.getTitle(),post.getExcerpt(),post.getContent(),post.getAuthor(),tags);
+        System.out.println("old post is ="+newPost);
+        newPost.setTags(tags);
+        post.setTags(tags);
+        System.out.println("post is "+post);
+        System.out.println("new post is ="+newPost);
+
+//        postRepository.save(newPost); or below any
         postRepository.save(post);
 
     }

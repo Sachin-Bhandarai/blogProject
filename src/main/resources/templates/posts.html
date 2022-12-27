@@ -7,6 +7,10 @@
 
 </head>
 <body>
+<form class="form-inline my-2 my-lg-0" action="post/sort">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" >Search</button>
+</form>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -115,12 +119,12 @@
 <div th:if="${totalPages>1}">
     <div class="row" col-sm-10>
         <div class="col-sm-2">
-            Total Rows [[${totalItems}]]
+<!--            Total Rows [[${totalItems}]]-->
         </div>
         <div class="col-sm-2">
             <span th:each="i:${#numbers.sequence(1,totalPages)}">
                 <a th:if="${currentPage!=i}" th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">[[${i}]]</a>
-                <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;&nbsp;
+                <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;
             </span>
         </div>
 <!--   next -->

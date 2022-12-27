@@ -2,6 +2,7 @@ package com.mountblue.blog.impl;
 
 import com.mountblue.blog.entity.Comment;
 import com.mountblue.blog.entity.Post;
+import com.mountblue.blog.entity.Tag;
 import com.mountblue.blog.repository.PostRepository;
 import com.mountblue.blog.service.PostService;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +34,19 @@ public class PostServiceImpl implements PostService {
             return postRepository.findById(id).get();
         }
          throw new RuntimeException("not found");
+    }
+
+    @Override
+    public void savePost(Post post, String postTags) {
+        String[] tagArray = postTags.split(",");
+        List<Tag> tags = new ArrayList<>();
+        for (String tag : tagArray) {
+            Tag tagObject = new Tag();
+            tagObject.setName(tag);
+            tags.add(tagObject);
+        }
+        postRepository.save(post);
+
     }
 
     @Override
@@ -97,11 +112,8 @@ public class PostServiceImpl implements PostService {
         return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    @Override
-    public Page<Post> findAll(Pageable pageable) {
 
-        return null;
-    }
+
 
     @Override
     public Page<Post> findPaginated(int pageNo, int pageSize,String sortField,String sortDirection) {
@@ -110,6 +122,11 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(pageNo-1,pageSize,sort);
         return this.postRepository.findAll(pageable);
     }
+
+
+
+
+
 
 
     private static Comment createComment(Post post, String name, String email, String commentData) {

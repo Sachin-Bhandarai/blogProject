@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+<body>
+
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Title</th>
+    <th scope="col">Excerpt</th>
+    <th scope="col">Author</th>
+    <th scope="col">Post</th>
+    <th scope="col">
+<!--      <a th:href="@{'/page/' + ${currentPage} + '?sortField=createdAt&sortDirection='+ ${reverseSortDirection}} ">-->
+<!--        Created At-->
+<!--      </a>-->
+      Created At
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="post,status: ${posts}" >
+    <td th:text="${post.title}"></td>
+    <td th:text="${post.excerpt}"></td>
+    <td th:text="${post.author}"></td>
+    <td th:text="${post.content}"></td>
+    <td th:text="${post.createdAt}"></td>
+    <td><a href="#" th:href="@{/post/{id}(id = ${post.id})}" class="badge badge-info">view</a></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

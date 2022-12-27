@@ -10,6 +10,7 @@ import java.util.List;
 public interface PostService {
     List<Post> getAllPosts();
     Post getPostById(Long id);
+    void savePost(Post post,String postTags);
     void addCommentByPostId(Long postId, String name, String email, String commentData);
     void deleteCommentByCommentId(Long postId,Long commentId);
     void updateCommentByCommentId(Long postId,Long commentId,String commentData);
@@ -18,8 +19,9 @@ public interface PostService {
     void updatePost(Long postId ,String newPost);
      List<Post>findAll(String field);
      //pageable = currentPage+recordPerPage
-     Page<Post>findAll(Pageable pageable);
+//     Page<Post>findAll(Pageable pageable);
      Page<Post> findPaginated(int pageNo, int  pageSize,String sortField,String sortDirection);
+//     List<Post> findByTitleOrExcerptOrAuthor(String title,String excerpt,String author);
 
 
 

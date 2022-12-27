@@ -3,6 +3,8 @@ package com.mountblue.blog.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.UpdateTimestamp;
 
 
@@ -42,6 +44,7 @@ public class Post {
             joinColumns = { @JoinColumn(name = "post_id") },
             inverseJoinColumns = { @JoinColumn(name = "tag_id") }
     )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Tag> tags;
 
 

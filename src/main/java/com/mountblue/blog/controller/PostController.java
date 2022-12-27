@@ -35,7 +35,7 @@ public class PostController {
 //        model.addAttribute("posts", postService.getAllPosts());
 // new
 
-        return post(1,"createdAt","asc",model);
+        return post(1,"createdAt","desc",model);
     }
 
     @CrossOrigin
@@ -52,7 +52,7 @@ public class PostController {
         System.out.println("*****************8***88********");
         System.out.println("post tags are "+post.getTags());
         System.out.println("post tags are "+tags);
-        postServiceImpl.save(post);
+        postServiceImpl.savePost(post,tags);
         return "redirect:/post";
     }
 

@@ -54,11 +54,13 @@ public class PostServiceImpl implements PostService {
         Post newPost= new Post(post.getTitle(),post.getExcerpt(),post.getContent(),post.getAuthor(),tags);
         System.out.println("old post is ="+newPost);
         newPost.setTags(tags);
-        post.setTags(tags);
+//        post.setTags(tags);
         System.out.println("post is "+post);
         System.out.println("new post is ="+newPost);
 
 //        postRepository.save(newPost); or below any
+        post.setTags(tags);
+
         postRepository.save(post);
 
     }

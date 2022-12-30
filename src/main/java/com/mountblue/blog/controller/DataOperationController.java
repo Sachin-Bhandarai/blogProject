@@ -43,5 +43,6 @@ public class DataOperationController {
         System.out.println(postRepository.findByContentContainingIgnoreCase(field));
         return "sortedPosts";
     }
+    //get all tags and show it to home page
 
 }

@@ -4,6 +4,7 @@ import com.mountblue.blog.entity.Comment;
 import com.mountblue.blog.entity.Post;
 import com.mountblue.blog.impl.PostServiceImpl;
 import com.mountblue.blog.repository.PostRepository;
+import com.mountblue.blog.repository.TagRepository;
 import com.mountblue.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ public class PostController {
     private PostServiceImpl postServiceImpl;
     @Autowired
     private PostService postService;
+    @Autowired
+    private TagRepository tagRepository;
 
     public PostController(PostService postService,
                           PostRepository postRepository) {
@@ -149,6 +152,8 @@ public class PostController {
         model.addAttribute("reverseSortDirection",sortDirection.equals("asc") ? "desc" : "asc");
 
         model.addAttribute("posts",posts);
+        model.addAttribute("tags",tagRepository.getEntireColumn());
+        model.addAttribute("authors",postRepository.getEntireColumn());
 
 
         return "posts";

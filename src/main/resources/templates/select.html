@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http:www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/showSelect}" method="post">
+ <select>
+     <option value="value">
+       <input type="checkbox" name="tag1" value="html"/>
+         <label > html</label><br>
+         input type="checkbox" name="tag2" value="css"/>
+         <label > css</label><br>
+
+     </option>
+ </select>
+
+    tagServiceImpl.findByDistinctName()
+</body>
+</html>

@@ -4,13 +4,21 @@ import com.mountblue.blog.entity.Post;
 import com.mountblue.blog.entity.Student;
 import com.mountblue.blog.impl.PostServiceImpl;
 import com.mountblue.blog.impl.TagServiceImpl;
+import com.mountblue.blog.repository.PostRepository;
 import com.mountblue.blog.repository.TagRepository;
 import com.mountblue.blog.service.TagService;
+import com.mountblue.blog.utility.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class TestController {
@@ -22,6 +30,8 @@ public class TestController {
     PostServiceImpl postServiceImpl;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private PostRepository postRepository;
 
 
     public TestController(TagRepository tagRepository, TagService tagService) {
@@ -104,12 +114,13 @@ public class TestController {
          return "data";
     }
     @CrossOrigin
-    @ResponseBody()
+
     @GetMapping("/tags")
-    public  String showTags(){
+    public  String showTags(Model model){
         System.out.println("**********tags are************");
         System.out.println(tagService.getAllTags());
-        return "ok";
+        model.addAttribute("tags",tagServiceImpl.findByDistinctName());
+        return "select";
     }
 
     @CrossOrigin
@@ -117,10 +128,38 @@ public class TestController {
     @GetMapping("/posts")
     public  String postTags(){
         System.out.println("**********tags are************");
-        System.out.println(postServiceImpl.getPostById(102L).getTags());
+        System.out.println(postServiceImpl.getPostById(1L).getTags());
         System.out.println("*************post is **********");
-        System.out.println(postServiceImpl.getPostById(102L));
-        System.out.println(tagRepository.findById(202L).get().getName());
+        System.out.println(postServiceImpl.getPostById(1L));
+        System.out.println(tagRepository.findById(1L).get().getName());
+
+        return "ok";
+    }
+    @ResponseBody()
+    @GetMapping("/filter")
+    public  String filter(){
+        String startDate = "2022-12-08 12:30";
+        String endtDate = "2022-12-31 12:30";
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime sd = LocalDateTime.parse(startDate, formatter);
+        LocalDateTime ed = LocalDateTime.parse(endtDate, formatter);
+
+     String [] tags= {"js","html","css"};
+     String [] authors= {"shivam","sanah","surendra"};
+        for (Post post : postRepository.filterByTagAuthorDate(tags, authors)) {
+            System.out.println("post is "+post);
+        }
+
+        return "ok";
+    }
+    @GetMapping("/checking")
+    public  String checking(@RequestParam("start") String start, @RequestParam("last") String end,
+                            @RequestParam("vehicle1") String vehicle){
+        System.out.println("***********/checking*******");
+        System.out.println("start is "+start);
+        System.out.println("end is "+end);
+        System.out.println("vehicle is "+vehicle);
 
         return "ok";
     }

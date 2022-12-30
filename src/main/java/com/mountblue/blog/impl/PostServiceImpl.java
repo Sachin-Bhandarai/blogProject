@@ -54,9 +54,8 @@ public class PostServiceImpl implements PostService {
         System.out.println(post);
         System.out.println("***********tagss are ***");
         System.out.println(postTags);
-        List<Tag> tagsObject = tagService.getAllTags();
+//        List<Tag> tagsObject = tagService.getAllTags();
         List<String>userGivenTagNames= Arrays.asList(postTags.split(","));
-
         List<Tag> tagslist = new ArrayList<>();
         List<Tag> tagsToAdd=new ArrayList<>();
         for (String tagName : userGivenTagNames) {
@@ -70,8 +69,9 @@ public class PostServiceImpl implements PostService {
                 tagsToAdd.add(newTag);
             }
             else {
-                Tag oldTag= new Tag();
-                oldTag.setName(tagName);
+                Tag oldTag= tagRepository.findByName(tagName);
+                System.out.println("preent tag is "+oldTag.getName());
+//                oldTag.setName(tagName);
                 oldTag.getPosts().add(post);
                 System.out.println("********saving  old tag  tag is *****");
                 System.out.println(oldTag);
@@ -79,7 +79,7 @@ public class PostServiceImpl implements PostService {
             }
             post.setTags(tagsToAdd);
         }
-        post.setTags(tagslist);
+        post.setTags(tagsToAdd);
         postRepository.save(post);
 
 
@@ -169,6 +169,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long id) {
+        System.out.println("***************************");
+        System.out.println("deleting post with id ="+id);
+        System.out.println("post is "+getPostById(id));
         postRepository.delete(getPostById(id));
     }
 

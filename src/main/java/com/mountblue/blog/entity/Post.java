@@ -6,10 +6,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.repository.Temporal;
 
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -45,7 +48,7 @@ public class Post {
             inverseJoinColumns = { @JoinColumn(name = "tag_id") }
     )
 //    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     public Post(String title, String excerpt,  String content,String author, List<Tag> tags) {
         this.title = title;

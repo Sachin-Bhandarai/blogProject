@@ -4,23 +4,34 @@ import com.mountblue.blog.entity.Comment;
 import com.mountblue.blog.entity.Post;
 import com.mountblue.blog.entity.Tag;
 import com.mountblue.blog.repository.PostRepository;
+import com.mountblue.blog.repository.TagRepository;
 import com.mountblue.blog.service.PostService;
+import com.mountblue.blog.service.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
-    private PostRepository postRepository;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    private PostRepository postRepository;
+    @Autowired
+    private TagService tagService;
+    private final TagRepository tagRepository;
+
+    public PostServiceImpl(PostRepository postRepository,
+                           TagRepository tagRepository) {
         super();
         this.postRepository = postRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -33,36 +44,81 @@ public class PostServiceImpl implements PostService {
         if (postRepository.findById(id).isPresent()) {
             return postRepository.findById(id).get();
         }
-         throw new RuntimeException("not found");
+//         throw new RuntimeException("not found");
+        return  null;
     }
 
     @Override
     public void savePost(Post post, String postTags) {
-        String[] tagArray = postTags.split(",");
-        List<Tag> tags = new ArrayList<>();
-        for (String tag : tagArray) {
-            System.out.println("*********in savePost()********");
-            System.out.println("tags are ="+tag);
-            Tag tagObject = new Tag();
-            tagObject.setName(tag);
-            tags.add(tagObject);
+        System.out.println("**************in save post post is****");
+        System.out.println(post);
+        System.out.println("***********tagss are ***");
+        System.out.println(postTags);
+        List<Tag> tagsObject = tagService.getAllTags();
+        List<String>userGivenTagNames= Arrays.asList(postTags.split(","));
+
+        List<Tag> tagslist = new ArrayList<>();
+        List<Tag> tagsToAdd=new ArrayList<>();
+        for (String tagName : userGivenTagNames) {
+            if(!checkTag(tagName))  {
+                Tag newTag = new Tag();
+                newTag.setName(tagName);
+                newTag.getPosts().add(post);
+                System.out.println("********saving new tag  tag is *****");
+                System.out.println(newTag);
+                tagRepository.save(newTag);
+                tagsToAdd.add(newTag);
+            }
+            else {
+                Tag oldTag= new Tag();
+                oldTag.setName(tagName);
+                oldTag.getPosts().add(post);
+                System.out.println("********saving  old tag  tag is *****");
+                System.out.println(oldTag);
+                tagsToAdd.add(oldTag);
+            }
+            post.setTags(tagsToAdd);
         }
-//        post.setTags(tags);
-        System.out.println("tags are ="+tags.toString());
-        System.out.println("post is "+post.toString());
-        System.out.println("to be saved is"+post);
-        Post newPost= new Post(post.getTitle(),post.getExcerpt(),post.getContent(),post.getAuthor(),tags);
-        System.out.println("old post is ="+newPost);
-        newPost.setTags(tags);
-//        post.setTags(tags);
-        System.out.println("post is "+post);
-        System.out.println("new post is ="+newPost);
-
-//        postRepository.save(newPost); or below any
-        post.setTags(tags);
-
+        post.setTags(tagslist);
         postRepository.save(post);
 
+
+
+
+
+
+
+//        comments.removeIf(comment->comment.getId().equals(commentId));
+
+
+
+
+
+
+//        tagsObject.removeIf(tag->tag.getName().equals(tag.getName()));
+//        for (String tagName : userGivenTagNames) {
+//            Tag tag = tagService.getTagByName(tagName);
+//            if (tag == null){
+//                tag = new Tag();
+//                tag.setName(tagName);
+//            }
+//            //associate post to tag
+//            tag.addPost(post);
+//            tagService.saveTag(tag);
+//
+//        }
+//
+
+//
+    }
+
+    public boolean checkTag(String tagName) {
+        List<Tag> tags = tagRepository.findAll();
+        for (Tag tag : tags) {
+            if(tag.getName().equals(tagName))
+                return true;
+        }
+        return false;
     }
 
     @Override

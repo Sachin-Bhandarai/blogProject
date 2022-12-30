@@ -21,7 +21,9 @@ public interface PostService {
      //pageable = currentPage+recordPerPage
 //     Page<Post>findAll(Pageable pageable);
      Page<Post> findPaginated(int pageNo, int  pageSize,String sortField,String sortDirection);
+
 //     List<Post> findByTitleOrExcerptOrAuthor(String title,String excerpt,String author);
+
 
 
 

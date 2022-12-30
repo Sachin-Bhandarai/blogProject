@@ -21,14 +21,14 @@ public class Tag {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     @ManyToMany(mappedBy = "tags",cascade = CascadeType.ALL)
-    private List<Post> posts;
+    private List<Post> posts=new ArrayList<>();
 
-//    public void addPost(Post post) {
-//        if (posts.equals(null)) {
-//            posts = new ArrayList<>();
-//        }
-//        posts.add(post);
-//    }
+    public void addPost(Post post) {
+        if (posts.equals(null)) {
+            posts = new ArrayList<>();
+        }
+        posts.add(post);
+    }
 
     public Long getId() {
         return id;
@@ -70,14 +70,14 @@ public class Tag {
         this.posts = posts;
     }
 
-    @Override
-    public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", posts=" + posts +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Tag{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", createdAt=" + createdAt +
+//                ", updatedAt=" + updatedAt +
+//                ", posts=" + posts +
+//                '}';
+//    }
 }

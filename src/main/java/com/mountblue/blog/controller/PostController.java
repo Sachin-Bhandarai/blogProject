@@ -17,7 +17,7 @@ import java.util.List;
 public class PostController {
     private final PostRepository postRepository;
     @Autowired
-    PostServiceImpl postServiceImpl;
+    private PostServiceImpl postServiceImpl;
     @Autowired
     private PostService postService;
 
@@ -34,7 +34,7 @@ public class PostController {
 //        old
 //        model.addAttribute("posts", postService.getAllPosts());
 // new
-
+//         TODO change the name and don't call from controller ,reomve model
         return post(1,"createdAt","desc",model);
     }
 
@@ -52,7 +52,7 @@ public class PostController {
         System.out.println("**************in controller********");
 
         System.out.println("post tags are "+tags);
-        postServiceImpl.savePost(post,tags);
+        postServiceImpl.savePost(post,tags);   //change
         return "redirect:/post";
     }
 
@@ -76,6 +76,10 @@ public class PostController {
         return "redirect:/post/" + postId;
     }
 
+    ///    post (post/post/{id}
+    //     delete (post/post >
+    //     get (post/post/{id}
+    //      (/)
     @CrossOrigin
     @GetMapping("/post/{postId}/comment/{commentId}")
     public String deleteComment(@PathVariable("postId") Long postId,@PathVariable("commentId") Long commentId) {
@@ -85,7 +89,7 @@ public class PostController {
 
     // comment redirct to upate page
     @CrossOrigin
-    @GetMapping("/showCommentUpdate/{id}/post/{postId}")
+    @GetMapping("/showCommentUpdate/{id}/post/{postId}") //show comment
     public String showUpdateComment(@PathVariable("postId") Long postId,@PathVariable("id") Long commentId,Model model) {
         System.out.println("commentId="+commentId+ " postId="+postId);
         model.addAttribute("comment",postServiceImpl.getCommentByPostId(postId,commentId));
@@ -99,7 +103,6 @@ public class PostController {
         return "redirect:/post/" + postId;
     }
     @CrossOrigin
-
     @PostMapping("/post/{id}")
     public String deletePost(@PathVariable("id") Long postId){
         postServiceImpl.deletePostById(postId);
@@ -122,17 +125,22 @@ public class PostController {
     }
     @CrossOrigin
     @GetMapping("/page/{pageNo}")
-    public String post(@PathVariable(value = "pageNo") Integer pageNo,
+    //controler can't be called from controller
+    public String post(@PathVariable(value = "pageNo" ) Integer pageNo,
                        @RequestParam("sortField") String sortField,
                        @RequestParam("sortDirection") String sortDirection,
                        Model model){
+        if(pageNo==null) pageNo=1;
+        if(sortField==null) sortField="java";
+        if(sortDirection==null) sortDirection="ASC";
         System.out.println("page no ="+pageNo);
         int pageSize=5;
-        Page<Post> pageOfPosts = postServiceImpl.findPaginated(pageNo,pageSize,sortField,sortDirection);
-        List<Post> posts=pageOfPosts.getContent();
+
+        Page<Post> postPages = postServiceImpl.findPaginated(pageNo,pageSize,sortField,sortDirection);
+        List<Post> posts=postPages.getContent();
         model.addAttribute("currentPage",pageNo);
-        model.addAttribute("totalPages",pageOfPosts.getTotalPages());
-        model.addAttribute("totalItems",pageOfPosts.getTotalElements());
+        model.addAttribute("totalPages",postPages.getTotalPages());
+        model.addAttribute("totalItems",postPages.getTotalElements());
 
 
         model.addAttribute("sortField",sortField);

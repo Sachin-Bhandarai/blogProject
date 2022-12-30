@@ -6,10 +6,10 @@
 </head>
 <body>
 <h1> Register</h1>
-<form th:action="@{/saveEmp}" th:object="${employee}">
-    Name - <input th:field="*{name}"/><br>
-    Salary - <input th:field="*{salary}"/><br>
-    Mobile - <input th:field="*{mob}"/><br>
+<form th:action="@{/saveEmp}" th:object="${student}" th:method="post">
+    Name - <input th:field="*{name}"/> <br>
+    Salary <input th:field="*{age}"/><br>
+    Mobile - <input th:field="*{contacts}"/><br>
     <input type="submit" value="Register">
 </form>
 </body>

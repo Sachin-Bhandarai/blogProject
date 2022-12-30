@@ -3,8 +3,42 @@ package com.mountblue.blog.entity;
 import java.util.List;
 
 public class Student {
-    private String name;
+    private String name="sachin";
+    private String nickName="sagar";
+    private int age;
+
+    {
+        age = 23;
+    }
+
     private List<Contact> contacts;
+
+    public Student() {
+        System.out.println("student creatd");
+
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Student(String name, int age, List<Contact> contacts) {
+        this.name = name;
+        this.age = age;
+        this.contacts = contacts;
+    }
 
     public Student(String name, List<Contact> contacts) {
         this.name = name;

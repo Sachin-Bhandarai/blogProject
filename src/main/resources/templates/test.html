@@ -5,37 +5,73 @@
     <title>Title</title>
 </head>
 <body>
-<form action="#" th:action="@{/register}" method="post" th:object="${user}">
-  <label>Full name:</label>
-  <input type="text" th:field="*{name}" /><br/>
+<!--<form action="#" th:action="@{/register}" method="post" th:object="${user}">-->
+<!--  <label>Full name:</label>-->
+<!--  <input type="text" th:field="*{name}" /><br/>-->
 
-  <label>E-mail:</label>
-  <input type="text" th:field="*{email}" /><br/>
+<!--  <label>E-mail:</label>-->
+<!--  <input type="text" th:field="*{email}" /><br/>-->
 
-  <label>Password:</label>
-  <input type="password" th:field="*{password}" /><br/>
+<!--  <label>Password:</label>-->
+<!--  <input type="password" th:field="*{password}" /><br/>-->
 
-  <label>Birthday (yyyy-mm-dd):</label>
-  <input type="text" th:field="*{birthday}" /><br/>
+<!--  <label>Birthday (yyyy-mm-dd):</label>-->
+<!--  <input type="text" th:field="*{birthday}" /><br/>-->
 
-  <label>Gender:</label>
-  <input type="radio" th:field="*{gender}" value="Male" />Male
-  <input type="radio" th:field="*{gender}" value="Female" />Female<br/>
+<!--  <label>Gender:</label>-->
+<!--  <input type="radio" th:field="*{gender}" value="Male" />Male-->
+<!--  <input type="radio" th:field="*{gender}" value="Female" />Female<br/>-->
 
-  <label>Profession:</label>
-  <select th:field="*{profession}">
-    <option th:each="p : ${listProfession}" th:value="${p}" th:text="${p}" />
-  </select>
-  <br/>
+<!--  <label>Profession:</label>-->
+<!--  <select th:field="*{profession}">-->
+<!--    <option th:each="p : ${listProfession}" th:value="${p}" th:text="${p}" />-->
+<!--  </select>-->
+<!--  <br/>-->
 
-  <label>Married?</label>
-  <input type="checkbox" th:field="*{married}" /><br/>
+<!--  <label>Married?</label>-->
+<!--  <input type="checkbox" th:field="*{married}" /><br/>-->
 
-  <label>Note:</label>
-  <textarea rows="5" cols="25" th:field="*{note}"></textarea>
-  <br/>
+<!--  <label>Note:</label>-->
+<!--  <textarea rows="5" cols="25" th:field="*{note}"></textarea>-->
+<!--  <br/>-->
 
-  <button type="submit">Register</button>
-</form>
+<!--  <button type="submit">Register</button>-->
+<!--</form>-->
+
+
+<div th:if="${totalPages>1}">
+
+            <span th:each="i:${#numbers.sequence(1,totalPages)}">
+                <a th:if="${currentPage!=i}"
+                   th:href="@{'/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}" th:text="${i}">
+
+                </a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span> &nbsp;
+<!--                if ka true h to if chlega ,unless ka true h to unless chlega -->
+            </span>
+
+        <!--   next -->
+
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{'/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">Next</a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+
+<!--                last-->
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDirection=' + ${sortDirection}}">Last</a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+
+</div>
+
+if unless condition is false then it work, it true not works
+
+<h1 th:unless="${salary>10}"> unless is true</h1>
+<h1 th:unless="${salary>170000}"> unless is false</h1>
+
+
+
+
+
+
 </body>
 </html>

@@ -8,15 +8,16 @@ import com.mountblue.blog.repository.TagRepository;
 import com.mountblue.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @Controller
 public class PostController {
-    private final PostRepository postRepository;
     @Autowired
     private PostServiceImpl postServiceImpl;
     @Autowired
@@ -24,39 +25,30 @@ public class PostController {
     @Autowired
     private TagRepository tagRepository;
 
-    public PostController(PostService postService,
-                          PostRepository postRepository) {
-        super();
-        this.postService = postService;
-        this.postRepository = postRepository;
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
-    @CrossOrigin
-    @GetMapping("/post")
-    public String getAllPosts(Model model) {
-//        old
-//        model.addAttribute("posts", postService.getAllPosts());
-// new
-//         TODO change the name and don't call from controller ,reomve model
-        return post(1,"createdAt","desc",model);
+    @GetMapping("/home")
+    public String home(Model model) {
+        String keyword = null;
+        return postsByPage(model, 1, "author", "asc", keyword);
     }
 
     @CrossOrigin
     @GetMapping("/post/new")
     public String createPost(Model model) {
         Post post = new Post();
-        model.addAttribute("post",post);
+        model.addAttribute("post", post);
         return "writePost";
     }
 
     @CrossOrigin
     @PostMapping("/post")
-    public String savePost(@ModelAttribute("post") Post post,@RequestParam("postTags") String tags) {
-        System.out.println("**************in controller********");
-
-        System.out.println("post tags are "+tags);
-        postServiceImpl.savePost(post,tags);   //change
-        return "redirect:/post";
+    public String savePost(@ModelAttribute("post") Post post, @RequestParam("postTags") String tags) {
+        postService.savePost(post, tags);
+        return "redirect:/home";
     }
 
     @CrossOrigin
@@ -74,91 +66,77 @@ public class PostController {
                               @RequestParam(name = "email") String email,
                               @RequestParam(name = "comment") String commentData,
                               @RequestParam(name = "id") Long postId) {
-        postServiceImpl.addCommentByPostId(postId, name, email, commentData);
-        System.out.println(postId);
+        postService.addCommentByPostId(postId, name, email, commentData);
         return "redirect:/post/" + postId;
     }
 
-    ///    post (post/post/{id}
-    //     delete (post/post >
-    //     get (post/post/{id}
-    //      (/)
     @CrossOrigin
     @GetMapping("/post/{postId}/comment/{commentId}")
-    public String deleteComment(@PathVariable("postId") Long postId,@PathVariable("commentId") Long commentId) {
-        postServiceImpl.deleteCommentByCommentId(postId,commentId);
+    public String deleteComment(@PathVariable("postId") Long postId, @PathVariable("commentId") Long commentId) {
+        postService.deleteCommentByCommentId(postId, commentId);
         return "redirect:/post/" + postId;
     }
 
-    // comment redirct to upate page
+
     @CrossOrigin
-    @GetMapping("/showCommentUpdate/{id}/post/{postId}") //show comment
-    public String showUpdateComment(@PathVariable("postId") Long postId,@PathVariable("id") Long commentId,Model model) {
-        System.out.println("commentId="+commentId+ " postId="+postId);
-        model.addAttribute("comment",postServiceImpl.getCommentByPostId(postId,commentId));
-        model.addAttribute("postId",postId);
+    @GetMapping("/showCommentUpdate/{id}/post/{postId}")
+    public String showUpdateComment(@PathVariable("postId") Long postId, @PathVariable("id") Long commentId, Model model) {
+        model.addAttribute("comment", postService.getCommentByPostId(postId, commentId));
+        model.addAttribute("postId", postId);
         return "updateComment";
     }
+
     @CrossOrigin
     @PostMapping("/updateComment")
-    public String saveUpdatedComment(@RequestParam("postId") Long postId, @RequestParam("commentId") Long commentId,@ModelAttribute("comment") Comment comment){
-        postServiceImpl.updateCommentByCommentId(postId,commentId,comment.getComment());
+    public String saveUpdatedComment(@RequestParam("postId") Long postId, @RequestParam("commentId") Long commentId, @ModelAttribute("comment") Comment comment) {
+        postService.updateCommentByCommentId(postId, commentId, comment.getComment());
         return "redirect:/post/" + postId;
     }
+
     @CrossOrigin
     @PostMapping("/post/{id}")
-    public String deletePost(@PathVariable("id") Long postId){
-        postServiceImpl.deletePostById(postId);
-        return "redirect:/post";
+    public String deletePost(@PathVariable("id") Long postId) {
+        postService.deletePostById(postId);
+        return "redirect:/home";
     }
+
     @CrossOrigin
     @PostMapping("/post/update")
-    public String updatePost(@RequestParam("postId") Long postId,@ModelAttribute("post") Post post){
-        postServiceImpl.updatePost(postId,post.getContent());
+    public String updatePost(@RequestParam("postId") Long postId, @ModelAttribute("post") Post post) {
+        postService.updatePost(postId, post.getContent());
         return "redirect:/post/" + postId;
     }
 
-    //redirect to post update page
+
     @CrossOrigin
     @GetMapping("/updatePostPage/post/{postId}")
-    public String updatePostPage(@PathVariable("postId") Long postId,Model model){
-        System.out.println("************redricting method********");
-        model.addAttribute("post",postServiceImpl.getPostById(postId));
+    public String updatePostPage(@PathVariable("postId") Long postId, Model model) {
+        model.addAttribute("post", postService.getPostById(postId));
         return "updatePostPage";
     }
-    @CrossOrigin
-    @GetMapping("/page/{pageNo}")
-    //controler can't be called from controller
-    public String post(@PathVariable(value = "pageNo" ) Integer pageNo,
-                       @RequestParam("sortField") String sortField,
-                       @RequestParam("sortDirection") String sortDirection,
-                       Model model){
-        if(pageNo==null) pageNo=1;
-        if(sortField==null) sortField="java";
-        if(sortDirection==null) sortDirection="ASC";
-        System.out.println("page no ="+pageNo);
-        int pageSize=5;
-
-        Page<Post> postPages = postServiceImpl.findPaginated(pageNo,pageSize,sortField,sortDirection);
-        List<Post> posts=postPages.getContent();
-        model.addAttribute("currentPage",pageNo);
-        model.addAttribute("totalPages",postPages.getTotalPages());
-        model.addAttribute("totalItems",postPages.getTotalElements());
 
 
-        model.addAttribute("sortField",sortField);
-        model.addAttribute("sortDirection",sortDirection);
+    @GetMapping("/posts/page/{pageNumber}")
+    public String postsByPage(Model model,
+                              @PathVariable("pageNumber") int currentPage,
+                              @PathParam("sortField") String sortField,
+                              @PathParam("sortDirection") String sortDirection,
+                              @Param("keyword") String keyword) {
 
-        model.addAttribute("reverseSortDirection",sortDirection.equals("asc") ? "desc" : "asc");
+        Page<Post> pages = postService.paginatedPost(currentPage, sortField, sortDirection, keyword);
+        List<Post> posts = pages.getContent();
+        model.addAttribute("posts", posts);
+        model.addAttribute("totalPages", pages.getTotalPages());
+        model.addAttribute("totalRecords", pages.getTotalElements());
+        model.addAttribute("recordsPerPage", pages.getNumberOfElements());
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("sortField", sortField);
+        String reverseSortDirection = sortDirection.equalsIgnoreCase("asc") ? "desc" : "asc";
+        model.addAttribute("reverseSortDirection", reverseSortDirection);
+        model.addAttribute("keyword", keyword);
 
-        model.addAttribute("posts",posts);
-        model.addAttribute("tags",tagRepository.getEntireColumn());
-        model.addAttribute("authors",postRepository.getEntireColumn());
-
-
-        return "posts";
+        return "home";
     }
-
-
 
 }

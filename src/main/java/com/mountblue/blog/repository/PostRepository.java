@@ -1,6 +1,8 @@
 package com.mountblue.blog.repository;
 
 import com.mountblue.blog.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +37,22 @@ public interface PostRepository extends JpaRepository<Post,Long> {
 List<Post> filterByTagAuthorDate(@Param("tag") String[] tags,@Param("author")  String[] authors);
 
 //    @Query(value = "SELECT p.* from parents p inner join children c on c.id=p.childId where TIMESTAMPDIFF(SECOND, p.ts, CURRENT_TIMESTAMP) < :interval", nativeQuery = true)
+
+ @Query("SELECT p FROM Post p WHERE "+
+          "CONCAT(p.title, ' ',p.author, ' ', p.content)"+
+           "LIKE %?1%"  )
+    Page<Post> findAll(String keyword,Pageable pageable);
+   List<Post> findAllByOrderByCreatedAtAsc();
+    List<Post> findAllByOrderByCreatedAtDesc();
+    @Query("SELECT p FROM Post p WHERE "+
+            "CONCAT(p.title, ' ',p.author, ' ', p.content)"+
+            "LIKE %?1%"  )
+    Page<Post> findAllSearches(String keyword,Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE "+
+            "CONCAT(p.title, ' ',p.author, ' ', p.content)"+
+            "LIKE %?1%"  )
+    List<Post> search(String keyword);
+
+
 }

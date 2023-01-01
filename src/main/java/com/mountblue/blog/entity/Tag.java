@@ -1,10 +1,10 @@
 package com.mountblue.blog.entity;
 
 
-import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

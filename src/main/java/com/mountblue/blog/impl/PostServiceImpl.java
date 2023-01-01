@@ -198,10 +198,25 @@ public class PostServiceImpl implements PostService {
         return this.postRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Post> findPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo-1,pageSize);
 
+        return postRepository.findAll(pageable);
+    }
 
+    @Override
+    public List<Post> search1(String keyword, String sortField, String sortDirection) {
+        int pageNo=1;
+        int pageSize = 5;
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+        Page postPages ;
 
-
+        List<Post> posts= postRepository.findAll();
+        return posts;
+    }
 
 
     private static Comment createComment(Post post, String name, String email, String commentData) {
@@ -218,4 +233,26 @@ public class PostServiceImpl implements PostService {
     }
 
 
+    @Override
+    public Page<Post> paginatedPost(int pageNumber,String sortField,String sortDirection,
+                                    String keyword){
+        System.out.println("in postServIpl");
+        Sort sort = Sort.by(sortField).ascending();
+        sort= sortDirection.equalsIgnoreCase("asc")? sort.ascending():sort.descending() ;
+        Pageable pageable = PageRequest.of(pageNumber-1,5,sort);
+        System.out.println("returning form postServIpl");
+        if(keyword!=null){
+            return postRepository.findAllSearches(keyword,pageable);
+        }
+       // will execute in run time,we don't even write in postRepo
+        return postRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Post> search(String keyword) {
+        if(keyword!=null){
+            return postRepository.search(keyword);
+        }
+        return postRepository.search(keyword);
+    }
 }

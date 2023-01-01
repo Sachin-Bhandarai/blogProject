@@ -1,6 +1,5 @@
 package com.mountblue.blog.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.LazyCollection;
@@ -8,7 +7,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.repository.Temporal;
 
-
+import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface PostService {
@@ -30,7 +31,10 @@ public interface PostService {
                         String sortDirection);
 
 
-    Page<Post> paginatedPost(int pageNumber,String sortField, String sortDirection,String keyword);
-    List<Post> search(String keyword);
+    Page<Post> paginatedPost(int pageNumber,String sortField, String sortDirection,String keyword ,
+                             String startDate,String lastDate, String tagFilters,String authorFilters);
+
+    List<String> getAuthors();
+
 
 }

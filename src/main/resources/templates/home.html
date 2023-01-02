@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http:www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Home</title>
+    <meta charset="UTF-8">
+    <title>Home</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -16,15 +16,20 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+<h3 th:inline="text">welcome [[${#httpServletRequest.remoteUser}]]</h3>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="logout"/>
+</form>
 <!--Search-->
 <form th:action="@{/posts/page/1}">
     <input type="text" name="keyword" th:value="${keyword}" required/>
     <input type="hidden" name="sortField" th:value="${sortField}"/>
     <input type="hidden" name="sortDirection" th:value="${sortDirection}"/>
+    <input type="hidden" name="tagFilters" th:value="${tagFilters}"/>
+    <input type="hidden" name="authorFilters" th:value="${authorFilters}"/>
     <input type="submit" value="Search"/>
 </form>
 <!--Search-->
-
 
 
 <table class="table table-hover">
@@ -38,7 +43,7 @@
         <th scope="col">
             <a th:href="@{'/posts/page/' + ${currentPage} + '?sortField=excerpt&sortDirection='+ ${reverseSortDirection}  +${keyword !=null ? '&keyword=' + keyword : ''} }">
                 Excerpt
-                </a>
+            </a>
 
         </th>
         <th scope="col">
@@ -46,11 +51,11 @@
                 Author
             </a>
         </th>
-        <th scope="col">
-                Post
+<!--        <th scope="col">-->
+<!--            Post-->
 
 
-        </th>
+<!--        </th>-->
         <th scope="col">
             <a th:href="@{'/posts/page/' + ${currentPage} + '?sortField=createdAt&sortDirection='+ ${reverseSortDirection}  +${keyword !=null ? '&keyword=' + keyword : ''}}">
                 Created At
@@ -61,11 +66,12 @@
     <tbody>
     <tr th:each="post,status: ${posts}">
         <td th:text="${post.title}"></td>
+
         <td th:text="${post.excerpt}"></td>
         <td th:text="${post.author}"></td>
-        <td th:text="${post.content}"></td>
+<!--        <td th:text="${post.content}"></td>-->
         <td th:text="${post.createdAt}"></td>
-        <td><a href="#" th:href="@{/post/{id}(id = ${post.id})}" class="badge badge-info">view</a></td>
+        <td><a href="#" th:href="@{/getPost/{id}(id = ${post.id})}" class="badge badge-info">view</a></td>
     </tr>
     </tbody>
 </table>
@@ -84,7 +90,8 @@
 
 
 <span th:each="i:${#numbers.sequence(1,totalPages)}">
-    <a th:if="${i != currentPage}" th:href="@{'/posts/page/' + ${i} +  '?sortField='+ ${sortField} + '&sortDirection='+ ${sortDirection} +${keyword !=null ? '&keyword=' + keyword : ''}  }"> [[${i}]]</a>
+    <a th:if="${i != currentPage}"
+       th:href="@{'/posts/page/' + ${i} +  '?sortField='+ ${sortField} + '&sortDirection='+ ${sortDirection} +${keyword !=null ? '&keyword=' + keyword : ''}  }"> [[${i}]]</a>
     <a th:unless="${i != currentPage}"> [[${i}]]</a>
 
 </span>
@@ -99,7 +106,7 @@
 <span th:unless="${currentPage < totalPages}"></span>
 
 
-<p>  [[${currentPage}]] of [[${totalPages}]] </p>
+<p> [[${currentPage}]] of [[${totalPages}]] </p>
 <p> Total Results [[${totalRecords}]] </p>
 
 
@@ -110,41 +117,51 @@
     <a href="/post/new" class="btn btn-info">Write Post</a>
 
 </button>
-
+<br> <br> <br> <br>
 <!--************************************************************Filter Buttons*************************************************-->
-<form  th:action="@{/checking}">
+<form th:action="@{/posts/page/1}">
+<!--    <form th:action="@{/filters}">-->
     <div class="d-flex">
         <div class="dropdown mr-1">
-            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown"
+            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuOffset"
+                    data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false" data-offset="10,20">
                 Tag
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset" >
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                 <tr th:each="tag: ${tags}">
-                    <input type="checkbox" id="vehicle" name="tags" th:value="${tag}">
+                    <input type="checkbox" id="vehicle" name="tagFilters" th:value="${tag}">
                     <label for="vehicle" th:text="${tag}"> </label><br>
                 </tr>
             </div>
         </div>
         <div class="btn-group">
             <button type="button" class="btn btn-secondary">Author</button>
-            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference"
+            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                    id="dropdownMenuReference"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
                 <tr th:each="author: ${authors}">
-                    <input type="checkbox" id="author" name="authors" th:value="${author}">
+                    <input type="checkbox" id="author" name="authorFilters" th:value="${author}">
                     <label for="vehicle" th:text="${author}"> </label><br>
                 </tr>
             </div>
         </div>
+        &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;
         <label for="start">Start Date</label>
-        <input type="date" id="start" name="start">
-
+        <input type="date" id="start" name="startDate">
+        &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;
         <label for="last">End Date</label>
-        <input type="date" id="last" name="last">
-
+        <input type="date" id="last" name="lastDate">
+        &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;
+        <input type="hidden" name="sortField" th:value="${sortField}"/>
+        <input type="hidden" name="sortDirection" th:value="${sortDirection}"/>
+        <input type="hidden" name="startDate" th:value="${startDate}"/>
+        <input type="hidden" name="lastDate" th:value="${lastDate}"/>
+        <input type="hidden" name="tagFilters" th:value="${tagFilters}"/>
+        <input type="hidden" name="authorFilters" th:value="${authorFilters}"/>
         <button>Apply</button>
     </div>
     <br><br>

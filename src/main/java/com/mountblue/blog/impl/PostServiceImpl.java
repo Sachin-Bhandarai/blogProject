@@ -14,10 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.sql.Date;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -44,72 +43,40 @@ public class PostServiceImpl implements PostService {
         if (postRepository.findById(id).isPresent()) {
             return postRepository.findById(id).get();
         }
-//         throw new RuntimeException("not found");
-        return  null;
+         throw new RuntimeException("not found");
     }
 
     @Override
     public void savePost(Post post, String postTags) {
         System.out.println("**************in save post post is****");
         System.out.println(post);
+        System.out.println("*******************escerpt to be saved is**********");
+        System.out.println(post.getContent().substring(0,5).toString());
+        post.setExcerpt(post.getContent().substring(0,20));
+        System.out.println("******************* new escerpt to be saved is**********");
+        System.out.println(post.getContent().toString());
         System.out.println("***********tagss are ***");
         System.out.println(postTags);
-//        List<Tag> tagsObject = tagService.getAllTags();
         List<String>userGivenTagNames= Arrays.asList(postTags.split(","));
-        List<Tag> tagslist = new ArrayList<>();
         List<Tag> tagsToAdd=new ArrayList<>();
         for (String tagName : userGivenTagNames) {
             if(!checkTag(tagName))  {
                 Tag newTag = new Tag();
                 newTag.setName(tagName);
                 newTag.getPosts().add(post);
-                System.out.println("********saving new tag  tag is *****");
                 System.out.println(newTag);
                 tagRepository.save(newTag);
                 tagsToAdd.add(newTag);
             }
             else {
                 Tag oldTag= tagRepository.findByName(tagName);
-                System.out.println("preent tag is "+oldTag.getName());
-//                oldTag.setName(tagName);
                 oldTag.getPosts().add(post);
-                System.out.println("********saving  old tag  tag is *****");
-                System.out.println(oldTag);
                 tagsToAdd.add(oldTag);
             }
             post.setTags(tagsToAdd);
         }
         post.setTags(tagsToAdd);
         postRepository.save(post);
-
-
-
-
-
-
-
-//        comments.removeIf(comment->comment.getId().equals(commentId));
-
-
-
-
-
-
-//        tagsObject.removeIf(tag->tag.getName().equals(tag.getName()));
-//        for (String tagName : userGivenTagNames) {
-//            Tag tag = tagService.getTagByName(tagName);
-//            if (tag == null){
-//                tag = new Tag();
-//                tag.setName(tagName);
-//            }
-//            //associate post to tag
-//            tag.addPost(post);
-//            tagService.saveTag(tag);
-//
-//        }
-//
-
-//
     }
 
     public boolean checkTag(String tagName) {
@@ -235,24 +202,90 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<Post> paginatedPost(int pageNumber,String sortField,String sortDirection,
-                                    String keyword){
-        System.out.println("in postServIpl");
+                                    String keyword,
+                                    String firstDate,String lastDate,String tagFilters,String authorFilters
+
+    )  {
         Sort sort = Sort.by(sortField).ascending();
+
         sort= sortDirection.equalsIgnoreCase("asc")? sort.ascending():sort.descending() ;
         Pageable pageable = PageRequest.of(pageNumber-1,5,sort);
-        System.out.println("returning form postServIpl");
+
+
         if(keyword!=null){
             return postRepository.findAllSearches(keyword,pageable);
         }
-       // will execute in run time,we don't even write in postRepo
+
+       //if only tag has value rest other has no value neither null  ///coming from filters so none has null
+        if(tagFilters!=null  && authorFilters.equals("")  && firstDate.equals(",") && lastDate.equals(",")   ) {
+            if ((tagFilters != "" && (firstDate.equals(",") && lastDate.equals(",") && authorFilters.equals("")))) {
+                List<String> tagList = List.of(tagFilters.split(","));
+                System.out.println(tagRepository.tagFilter(tagList, pageable).getContent().toString());
+                return tagRepository.tagFilter(tagList, pageable);
+            }
+        }
+        if(tagFilters!=null && authorFilters!=null &&  firstDate.equals(",") && lastDate.equals(",")  && !tagFilters.equals("") && !authorFilters.equals("")){
+            System.out.println("inside  tag+author");
+            System.out.println("tags are ="+tagFilters);
+            System.out.println("authros are ="+authorFilters);
+            List<String> tagList = List.of(tagFilters.split(","));
+            List<String> authorList =List.of(authorFilters.split(","));
+            Page<Post> posts=tagService.tagAuthorFilter(authorList,tagList,pageable);
+            for (Post post : posts) {
+                System.out.println(post.toString());
+            }
+            return tagService.tagAuthorFilter(authorList,tagList,pageable);
+        }
+        if( authorFilters!=null && authorFilters!=null && tagFilters.equals("")  && !authorFilters.equals("") && firstDate.equals(",") && lastDate.equals(",")   ){
+            System.out.println("inside author only ");
+            System.out.println("author is ="+authorFilters);
+            System.out.println("tags are "+tagFilters);
+            List<String> authorList = List.of(authorFilters.split(","));
+            Page<Post> posts=tagService.authorFilter(authorList,pageable);
+            for (Post post : posts) {
+                System.out.println(post.toString());
+            }
+            return tagService.authorFilter(authorList,pageable);
+        }
+        if( authorFilters!=null && authorFilters!=null && !firstDate.equals(",") && !lastDate.equals(",") && tagFilters.equals("") && authorFilters.equals("")){
+            System.out.println("inside date only");
+            System.out.println("author is ="+authorFilters);
+            System.out.println("tags are "+tagFilters);
+            System.out.println("start -> end"+firstDate+" -> "+lastDate);
+            System.out.println("chopped dates are");
+//            str.substring(0,str.length()-1)
+            firstDate= firstDate.substring(0,firstDate.length()-1);
+            lastDate= lastDate.substring(0,lastDate.length()-1);
+            System.out.println("chopped");
+            System.out.println(firstDate);
+            System.out.println(lastDate);
+            System.out.println("formattde");
+            System.out.println(Date.valueOf(firstDate));
+            System.out.println(Date.valueOf(lastDate));
+            Date startingDate =Date.valueOf(firstDate);
+            Date endingDate = Date.valueOf(lastDate);
+            List<Post> posts =  tagService.filterByDate(startingDate, endingDate, pageable).getContent();
+            for (Post post :posts) {
+                System.out.println("*****************post is**********");
+                System.out.println(post.toString());
+            }
+            System.out.println("query result are "+ tagService.filterByDate(startingDate,endingDate,pageable));
+            System.out.println("returning<>>>>>>>>>>>>>>>>");
+
+            return tagService.filterByDate(startingDate,endingDate,pageable);
+
+
+        }
+        // will execute in run time,we don't even write in postRepo
         return postRepository.findAll(pageable);
     }
 
+
+
     @Override
-    public List<Post> search(String keyword) {
-        if(keyword!=null){
-            return postRepository.search(keyword);
-        }
-        return postRepository.search(keyword);
+    public List<String> getAuthors() {
+        return postRepository.getAuthors();
     }
+
+
 }

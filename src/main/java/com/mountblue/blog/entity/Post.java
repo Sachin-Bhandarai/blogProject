@@ -2,17 +2,13 @@ package com.mountblue.blog.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.jpa.repository.Temporal;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -35,10 +31,10 @@ public class Post {
     @Column(columnDefinition = "text")
     private String content;
    @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment>comments;
     @ManyToMany(cascade = { CascadeType.PERSIST,CascadeType.DETACH,CascadeType.REFRESH,CascadeType.MERGE },fetch = FetchType.EAGER)
@@ -49,6 +45,8 @@ public class Post {
     )
 //    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Tag> tags = new ArrayList<>();
+    @ManyToOne
+    private User user;
 
     public Post(String title, String excerpt,  String content,String author, List<Tag> tags) {
         this.title = title;

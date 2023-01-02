@@ -1,58 +1,58 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http:www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Test</title>
-</head>
-<body>
-<div th:object="${post}">
-    <p th:text="${post.id}">post id = </p>
-    <p th:text="*{content}">post content = </p>
-    <br>
-    <a th:href="@{/updatePostPage/post/252}">update post 252</a> <br>
-    <a th:href="@{/updatePostPage/post/{pid}(pid=${post.id})}">update post with {pid}(pid=${post.id}) </a> <br>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http:www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Test</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:object="${post}">-->
+<!--    <p th:text="${post.id}">post id = </p>-->
+<!--    <p th:text="*{content}">post content = </p>-->
+<!--    <br>-->
+<!--    <a th:href="@{/updatePostPage/post/252}">update post 252</a> <br>-->
+<!--    <a th:href="@{/updatePostPage/post/{pid}(pid=${post.id})}">update post with {pid}(pid=${post.id}) </a> <br>-->
 
-    <a th:href="@{ TupdatePostPage/post/{pid}(pid=*{id})}">update post {pid}(pid=*{id}) localhost:8080/updatePostPage/post/pid=252 </a> <br>
+<!--    <a th:href="@{ TupdatePostPage/post/{pid}(pid=*{id})}">update post {pid}(pid=*{id}) localhost:8080/updatePostPage/post/pid=252 </a> <br>-->
 
-    <a th:href="@{/TupdatePostPage/post/(pid=${post.id})}">update post/(pid=*{id}) query  localhost:8080/updatePostPage/post/?pid=252 </a>  <br>
-
-
+<!--    <a th:href="@{/TupdatePostPage/post/(pid=${post.id})}">update post/(pid=*{id}) query  localhost:8080/updatePostPage/post/?pid=252 </a>  <br>-->
 
 
-</div>
-<a th:href="@{/TupdatePostPage/post/{pid}(pid=*{id})}">update post {pid}(pid=*{id}) out of scope</a>
-
-<br><br>
-<!--check again saw video-->
-<!--<h2> message variable from .properties file not from boot's application properties</h2>-->
-<!--<span th:text="#{author.name}"> blog author=</span>-->
-<!--<span th:text="#{post.name}"> blog post=</span>-->
-
-<h2>IF inside th:text ,will be execute if condition is true,html element will be rendered but not element's content</h2>
-<span th:text="${post.id >100} ? 'good post' "> Good Post</span>
-<!--this span will be rendered but not its content bcz condition is false-->
-<span th:text="${post.id <100}? 'Bad Post'"> Bad Post</span>
-<span th:unless="${post.id < 100} ? 'good post':'bad post' "> bad post</span>
-
-<br>
-<h2>If then else</h2>
-<span th:text="${post.id <100} ? 'bad post':'good post' "> </span>
-<span th:text="${post.id >100} ? 'good post':'bad post' "> </span>
-<br>
-
-<h3>IF -Unless to write content inside html element</h3>
-<span th:if="${post.id >100} ">good post </span>
-<br>
-<span th:unless="${post.id < 100} "> bad post</span>
-<br>
-<span th:unless="${post.id > 100} "> Good post</span>
 
 
+<!--</div>-->
+<!--<a th:href="@{/TupdatePostPage/post/{pid}(pid=*{id})}">update post {pid}(pid=*{id}) out of scope</a>-->
+
+<!--<br><br>-->
+<!--&lt;!&ndash;check again saw video&ndash;&gt;-->
+<!--&lt;!&ndash;<h2> message variable from .properties file not from boot's application properties</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;<span th:text="#{author.name}"> blog author=</span>&ndash;&gt;-->
+<!--&lt;!&ndash;<span th:text="#{post.name}"> blog post=</span>&ndash;&gt;-->
+
+<!--<h2>IF inside th:text ,will be execute if condition is true,html element will be rendered but not element's content</h2>-->
+<!--<span th:text="${post.id >100} ? 'good post' "> Good Post</span>-->
+<!--&lt;!&ndash;this span will be rendered but not its content bcz condition is false&ndash;&gt;-->
+<!--<span th:text="${post.id <100}? 'Bad Post'"> Bad Post</span>-->
+<!--<span th:unless="${post.id < 100} ? 'good post':'bad post' "> bad post</span>-->
+
+<!--<br>-->
+<!--<h2>If then else</h2>-->
+<!--<span th:text="${post.id <100} ? 'bad post':'good post' "> </span>-->
+<!--<span th:text="${post.id >100} ? 'good post':'bad post' "> </span>-->
+<!--<br>-->
+
+<!--<h3>IF -Unless to write content inside html element</h3>-->
+<!--<span th:if="${post.id >100} ">good post </span>-->
+<!--<br>-->
+<!--<span th:unless="${post.id < 100} "> bad post</span>-->
+<!--<br>-->
+<!--<span th:unless="${post.id > 100} "> Good post</span>-->
 
 
 
 
 
 
-</body>
-</html>
+
+
+<!--</body>-->
+<!--</html>-->
